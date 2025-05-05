@@ -1,0 +1,99 @@
+// (C) 2001-2025 Altera Corporation. All rights reserved.
+// Your use of Altera Corporation's design tools, logic functions and other 
+// software and tools, and its AMPP partner logic functions, and any output 
+// files from any of the foregoing (including device programming or simulation 
+// files), and any associated documentation or information are expressly subject 
+// to the terms and conditions of the Altera Program License Subscription 
+// Agreement, Altera IP License Agreement, or other applicable 
+// license agreement, including, without limitation, that your use is for the 
+// sole purpose of programming logic devices manufactured by Altera and sold by 
+// Altera or its authorized distributors.  Please refer to the applicable 
+// agreement for further details.
+
+
+// Copyright 2023 Intel Corporation.
+//
+// THIS SOFTWARE MAY CONTAIN PREPRODUCTION CODE AND IS PROVIDED BY THE
+// COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+// BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+// OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+// EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+///////////////////////////////////////////////////////////////////////
+// ===================================================================
+// Flops macros 
+// ===================================================================
+
+`define RTLGEN_CAFU_CSR0_FF(rtl_clk, rst_n, rst_val, d, q) \
+    always_ff @(posedge rtl_clk) \
+        if (!rst_n) q <= rst_val; \
+        else        q <= d;
+
+`define RTLGEN_CAFU_CSR0_EN_FF(rtl_clk, rst_n, rst_val, en, d, q) \
+    always_ff @(posedge rtl_clk) \
+        if (!rst_n) q <= rst_val; \
+        else \
+            if (en) q <= d;
+
+`define RTLGEN_CAFU_CSR0_FF_NEGEDGE(rtl_clk, rst_n, rst_val, d, q) \
+    always_ff @(negedge rtl_clk) \
+        if (!rst_n) q <= rst_val; \
+        else        q <= d;
+
+`define RTLGEN_CAFU_CSR0_EN_FF_NEGEDGE(rtl_clk, rst_n, rst_val, en, d, q) \
+    always_ff @(negedge rtl_clk) \
+        if (!rst_n) q <= rst_val; \
+        else \
+            if (en) q <= d;
+
+`define RTLGEN_CAFU_CSR0_FF_RSTD(rtl_clk, rst_n, rst_val, d, q) \
+   genvar \gen_``d`` ; \
+   generate \
+      if (1) begin : \ff_rstd_``d`` \
+         logic [$bits(q)-1:0] rst_vec, set_vec, d_vec, q_vec; \
+         assign rst_vec = !rst_n ? ~rst_val : '0; \
+         assign set_vec = !rst_n ? rst_val : '0; \
+         assign d_vec = d; \
+         assign q = q_vec; \
+         for ( \gen_``d`` = 0 ; \gen_``d`` < $bits(q) ; \gen_``d`` = \gen_``d`` + 1)  \
+            always_ff @(posedge rtl_clk) \
+               if (rst_vec[ \gen_``d`` ]) \
+                  q_vec[ \gen_``d`` ] <= '0; \
+               else if (set_vec[ \gen_``d`` ]) \
+                  q_vec[ \gen_``d`` ] <= '1; \
+               else   \
+                  q_vec[ \gen_``d`` ] <= d_vec[ \gen_``d`` ]; \
+      end \
+   endgenerate       
+
+`define RTLGEN_CAFU_CSR0_EN_FF_RSTD(rtl_clk, rst_n, rst_val, en, d, q) \
+   genvar \gen_``d`` ; \
+   generate \
+      if (1) begin : \en_ff_rstd_``d`` \
+         logic [$bits(q)-1:0] rst_vec, set_vec, d_vec, q_vec; \
+         assign rst_vec = !rst_n ? ~rst_val : '0; \
+         assign set_vec = !rst_n ? rst_val : '0; \
+         assign d_vec = d; \
+         assign q = q_vec; \
+         for ( \gen_``d`` = 0 ; \gen_``d`` < $bits(q) ; \gen_``d`` = \gen_``d`` + 1)  \
+            always_ff @(posedge rtl_clk) \
+               if (rst_vec[ \gen_``d`` ]) \
+                  q_vec[ \gen_``d`` ] <= '0; \
+               else if (set_vec[ \gen_``d`` ]) \
+                  q_vec[ \gen_``d`` ] <= '1; \
+               else if (en)  \
+                  q_vec[ \gen_``d`` ] <= d_vec[ \gen_``d`` ]; \
+      end \
+   endgenerate       
+
+
+`ifdef QUESTA_INTEL_OEM
+`pragma questa_oem_00 "JR9cM/TIGZ5bYvz0oDMc1wmyIMti8wIPoYYthhwhFEU251bHCqbN3TLTjyqI9pi446kPCBZST5Wme4Lj4a2oyXgpo05hq8tqeTT0DnKpUTQPQLBi1kxNX1Dmb/atW4lPtlVVMre2c1Z93XtG9/7fVrQOXerUVXQR+/YiRsYYtItbCkgOw2LBUO1A++on6zfk0rRPOEwxgFdLF7FQQiTewmN3sZ2SXvtVhJ2eBWTAi4O75o5QRhbvC4HbDP6BoGNa+nOqCfAmA5hV3e1TErNVF4cfLKRA2koec1dSaKoa8SEKzi0nWw4j8DO7PakOIfP4dVqXU1zoVrotiyMkYdjUI2oSFsU6Vcgy+6PfBlU6WKQiEUEwPLLqqfwRrKYPCqnn3sddd1WABB6Md7ASnaZzR5CaZsTyxqVoNjHa0d4j1WTp8BJY2a85nSlWBJpPtzaD/Tdmm8bnMNd3r+ISfndwuwyjrIDxOO687bfhsevnPo4H8eOTMVfZLvGR6gjInwZT/Nmem0rHZJAvfk09dqtW6UOK/kwtBolRZ/GVzsqsYgRLNGdkqT1jpUMdc+WqCgygaaz2mdtUERRIjaT95vwxm9RIaY3W8Tb0CoOat1/T/itnuzITDCZwfDLTJAkr5oG0upka7oS9vLo+SiXkVjDlTzF++tykYC/o5PJk27OHDVhKk52Pris7gi0eOuWsuFzgpnKGJsJbkMGL7z5P97s/vBIXgHlzXpm7fIekbDefltn1VTUo+QWbC/QPEYCEOpeObLZUdTM+o3HI15/20b0lDuZeM2CaCDyyCB09/75qVx8J2lt9/CgBvKvR9qMTXpc2r3M0vp+t4FpW7N+Ut/xiLymGGpzXpums5TUpHzFOJHLUN4p5hbNcrNtoRkZJfd3JzsfZ6OnXVsINxmGEq/Jx9xdixVDg+z49OBMw2TNvUhazoEI8RbPKzosQQoVg+hZaWHenrlPr6XyCd/Hc8umomTXBAsN3OlyTrTD9WvxvDPpRR1ZAPxxRluH4SxGgBetg"
+`endif

@@ -1,0 +1,157 @@
+// (C) 2001-2025 Altera Corporation. All rights reserved.
+// Your use of Altera Corporation's design tools, logic functions and other 
+// software and tools, and its AMPP partner logic functions, and any output 
+// files from any of the foregoing (including device programming or simulation 
+// files), and any associated documentation or information are expressly subject 
+// to the terms and conditions of the Altera Program License Subscription 
+// Agreement, Altera IP License Agreement, or other applicable 
+// license agreement, including, without limitation, that your use is for the 
+// sole purpose of programming logic devices manufactured by Altera and sold by 
+// Altera or its authorized distributors.  Please refer to the applicable 
+// agreement for further details.
+
+
+// Copyright 2022 Intel Corporation.
+//
+// THIS SOFTWARE MAY CONTAIN PREPRODUCTION CODE AND IS PROVIDED BY THE
+// COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND ANY EXPRESS OR IMPLIED
+// WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF
+// MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
+// DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE
+// LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR
+// CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF
+// SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS; OR
+// BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+// WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE
+// OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE,
+// EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+//
+///////////////////////////////////////////////////////////////////////
+
+`ifndef CCV_AFU_GLOBALS
+`define CCV_AFU_GLOBALS
+
+/*
+   global defines for configurable RTL
+   
+   Illegal generate statements:
+       within always block
+       within module instance declaration
+       within module IO declaration
+   For configurable FSMs implemented with (large) case statements, would have to duplicate case
+       statement for all parameter configurations.
+   Making globals breaks some Intel lint rules but allows for the use of `ifdef for configurable
+       RTL via command line contraints.
+*/
+
+/* Jan 2023 - changing to cafu_csr0
+   adding the axi2cpi logic
+   CPI_MODE and ORIGINAL_CCV_AFU_MODE cannot both be set to 1
+*/
+//`define CPI_MODE 1
+//`define ORIGINAL_CCV_AFU_MODE 1
+
+
+
+
+
+`define SUPPORT_CXL_CACHE   1
+`define SUPPORT_CXL_IO      1
+
+//`define SUPPORT_CXL_CACHE_AND_IO  1
+
+`define SUPPORT_ALGORITHM_1A   1
+//`define SUPPORT_ALGORITHM_1B   1
+//`define SUPPORT_ALGORITHM_2    1
+
+`ifdef SUPPORT_ALGORITHM_1A
+       //`define ALG_1A_SUPPORT_NON_SELF_CHECK   1
+       `define ALG_1A_SUPPORT_SELF_CHECK       1
+`endif
+
+`ifdef SUPPORT_ALGORITHM_1B
+       //`define ALG_1B_SUPPORT_NON_SELF_CHECK   1
+       `define ALG_1B_SUPPORT_SELF_CHECK       1
+`endif
+
+`define INCLUDE_POISON_INJECTION  1
+
+/*  page 604, Table 268 of CXL 2.0 Spec
+    FlushCache field
+*/
+`define FLUSHCACHE_NOT_SUPPORTED  1
+
+/* this should not be synthesized, just for verification
+*/
+//`define INCLUDE_TESTING_INJECT_BAD_BIT   1
+//`define TJBB_SVUNIT 1
+
+
+
+
+
+/*  signify if including ISOF-EP sideband ports
+*/
+`define INCLUDE IOSF_SB    1
+
+
+
+// copied over from sc_afu_wrapper
+`define APP_CORES   2
+
+
+/* Table 268 of CXL Spec 2.0 - AlgorithmConfiguration - WriteSemanticsCache
+*/
+`ifdef CPI_MODE
+  `define INC_AC_WSC_0   1
+  //`define INC_AC_WSC_1   1
+  //`define INC_AC_WSC_2   1
+  //`define INC_AC_WSC_3   1
+  //`define INC_AC_WSC_4   1
+  //`define INC_AC_WSC_5   1
+  //`define INC_AC_WSC_6   1
+  //`define INC_AC_WSC_7   1
+`else
+  `define INC_AC_WSC_0   1
+  //`define INC_AC_WSC_1   1
+  `define INC_AC_WSC_2   1
+  `define INC_AC_WSC_3   1
+  `define INC_AC_WSC_4   1
+  `define INC_AC_WSC_5   1
+  //`define INC_AC_WSC_6   1
+  `define INC_AC_WSC_7   1
+`endif
+
+/* Table 268 of CXL Spec 2.0 - AlgorithmConfiguration - ExecuteReadSemanticsCache
+*/
+`ifdef CPI_MODE
+  `define INC_AC_ERSC_0  1
+  //`define INC_AC_ERSC_1  1
+  `define INC_AC_ERSC_2  1
+  `define INC_AC_ERSC_4  1
+`else
+  `define INC_AC_ERSC_0  1
+  //`define INC_AC_ERSC_1  1
+  `define INC_AC_ERSC_2  1
+  `define INC_AC_ERSC_4  1
+`endif
+
+/* Table 268 of CXL Spec 2.0 - AlgorithmConfiguration - VerifyReadSemanticsCache
+*/
+`ifdef CPI_MODE
+  `define INC_AC_VRSC_0  1
+  //`define INC_AC_VRSC_1  1
+  //`define INC_AC_VRSC_2  1
+  //`define INC_AC_VRSC_4  1
+`else
+  `define INC_AC_VRSC_0  1
+  `define INC_AC_VRSC_1  1
+  `define INC_AC_VRSC_2  1
+  //`define INC_AC_VRSC_4  1
+`endif
+
+
+`endif // `define CCV_AFU_GLOBALS
+`ifdef QUESTA_INTEL_OEM
+`pragma questa_oem_00 "JR9cM/TIGZ5bYvz0oDMc1wmyIMti8wIPoYYthhwhFEU251bHCqbN3TLTjyqI9pi446kPCBZST5Wme4Lj4a2oyXgpo05hq8tqeTT0DnKpUTQPQLBi1kxNX1Dmb/atW4lPtlVVMre2c1Z93XtG9/7fVrQOXerUVXQR+/YiRsYYtItbCkgOw2LBUO1A++on6zfk0rRPOEwxgFdLF7FQQiTewmN3sZ2SXvtVhJ2eBWTAi4N2qPO5B9l2mLDpFSIhsfqD0WSpzft9c2XfikHt7/ccvnVHBfCpTy3KWbZvBz00BDIq3aqM+uEtT+d8OlkZzBe5tNJIlQd3rEta2YVKC8XjpJOEvn1UKf/pkDcy3OfS/Ras14kuSzr0OZuUtNVza4ghZj79BCSqLcGh1AwWffVsN/+E0fr3FR+5P4aLAXifdu+Psh2q59PaxszZKClE1E0IMmWf6/ktySvPs8e1EpMiaiYelVi0qtM2fuqJ1R5HJE0iVufOEtDf78Ojb3Q8oUHHiLKWMieTYDttSZRwR7Nwun5YMwGFlZPF58BwFRv9iMcDMvovxF9wZ/5LmSwpteG53oGf/cWrESwv8+pdMD1VfFxt87l5nuxnNskkeXW7lv4ZD4nkdmZ2Bk9p3QQWwFMprOLhjUPWc6HnoFmJKVw+c/CWoPHNFIY66G0YeU0cVt4l0GtXhsP0OsfLt+jp9ddKCFggpHNE2xuDXOSHPizmUgHvlFFV8l5dmEnPhWBJm/aeV/Y+SJVDtqCsYldd1RQYcl7sHKmkc7wI3hFq3F+jPGXJTuDnHB4ZF8QryLQKFNm1yqoryUQfaNU7+Z9IBmOYgtwyHZ+hxcdvFeADUXRhkP5yzkVj9sj9ldkrs9XK4hlGbgWikthsgo29tMu3fyMPOsFtYvFnNNtxJB33kKX6iwnZEZTxI+fPy8Jy0j62W5ul8VGPSsSgNRdDaM4ngPB0KJCJOFzAyvz8j/lx2cd4NQglyfZw09C0sUlKcxABXKphw0mNor5i0+vdLmenhgYM"
+`endif
