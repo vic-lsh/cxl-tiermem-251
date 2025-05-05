@@ -130,6 +130,7 @@ set_global_assignment -name IP_FILE ./common/cdc_fifos/fifo_12b_256w_show_ahead.
 set_global_assignment -name IP_FILE ./common/cdc_fifos/cfg_to_iosf_fifo_vcd_ED.ip 
 set_global_assignment -name IP_FILE ./common/cdc_fifos/iosf_to_cfg_fifo_vcd_ED.ip 
 
+set_global_assignment -name SYSTEMVERILOG_FILE ./common/afu/afu_if_pkg.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ./common/afu/afu_top.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ./common/afu/afu_csr_avmm_slave.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ./common/ex_default_csr/ex_default_csr_avmm_slave.sv 

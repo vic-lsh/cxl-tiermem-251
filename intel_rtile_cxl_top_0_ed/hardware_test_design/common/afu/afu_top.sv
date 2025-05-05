@@ -563,6 +563,110 @@ module afu_top(
     
 );
 
+afu_if_pkg::t_to_mc_axi4 [ddr_mc_top_common_pkg::MCTOP_MC_CHANNEL-1:0] ip_to_mc;
+afu_if_pkg::t_from_mc_axi4 [ddr_mc_top_common_pkg::MCTOP_MC_CHANNEL-1:0] mc_to_ip;
+
+// channel 0
+// write address channel
+assign ip_to_mc[0].awvalid  = ip2hdm_aximm0_awvalid;
+assign ip_to_mc[0].awid     = ip2hdm_aximm0_awid;
+assign ip_to_mc[0].awaddr   = ip2hdm_aximm0_awaddr;
+assign ip_to_mc[0].awlen    = ip2hdm_aximm0_awlen;
+assign ip_to_mc[0].awregion = ip2hdm_aximm0_awregion;
+assign ip_to_mc[0].awuser   = ip2hdm_aximm0_awuser;
+assign ip_to_mc[0].awsize   = ip2hdm_aximm0_awsize;
+assign ip_to_mc[0].awburst  = ip2hdm_aximm0_awburst;
+assign ip_to_mc[0].awprot   = ip2hdm_aximm0_awprot;
+assign ip_to_mc[0].awqos    = ip2hdm_aximm0_awqos;
+assign ip_to_mc[0].awcache  = ip2hdm_aximm0_awcache;
+assign ip_to_mc[0].awlock   = ip2hdm_aximm0_awlock;
+assign hdm2ip_aximm0_awready = mc_to_ip[0].awready;
+// write data channel
+assign ip_to_mc[0].wvalid = ip2hdm_aximm0_wvalid;
+assign ip_to_mc[0].wdata  = ip2hdm_aximm0_wdata;
+assign ip_to_mc[0].wstrb  = ip2hdm_aximm0_wstrb;
+assign ip_to_mc[0].wlast  = ip2hdm_aximm0_wlast;
+assign ip_to_mc[0].wuser  = ip2hdm_aximm0_wuser;
+assign hdm2ip_aximm0_wready = mc_to_ip[0].wready;
+// write response channel
+assign hdm2ip_aximm0_bvalid = mc_to_ip[0].bvalid;
+assign hdm2ip_aximm0_bid    = mc_to_ip[0].bid;
+assign hdm2ip_aximm0_buser  = mc_to_ip[0].buser;
+assign hdm2ip_aximm0_bresp  = mc_to_ip[0].bresp;
+assign ip_to_mc[0].bready = ip2hdm_aximm0_bready;
+// read address channel
+assign ip_to_mc[0].arvalid  = ip2hdm_aximm0_arvalid;
+assign ip_to_mc[0].arid     = ip2hdm_aximm0_arid;
+assign ip_to_mc[0].araddr   = ip2hdm_aximm0_araddr;
+assign ip_to_mc[0].arlen    = ip2hdm_aximm0_arlen;
+assign ip_to_mc[0].arregion = ip2hdm_aximm0_arregion;
+assign ip_to_mc[0].aruser   = ip2hdm_aximm0_aruser;
+assign ip_to_mc[0].arsize   = ip2hdm_aximm0_arsize;
+assign ip_to_mc[0].arburst  = ip2hdm_aximm0_arburst;
+assign ip_to_mc[0].arprot   = ip2hdm_aximm0_arprot;
+assign ip_to_mc[0].arqos    = ip2hdm_aximm0_arqos;
+assign ip_to_mc[0].arcache  = ip2hdm_aximm0_arcache;
+assign ip_to_mc[0].arlock   = ip2hdm_aximm0_arlock;
+assign hdm2ip_aximm0_arready = mc_to_ip[0].arready;
+// read response channel
+assign hdm2ip_aximm0_rvalid = mc_to_ip[0].rvalid;
+assign hdm2ip_aximm0_rlast  = mc_to_ip[0].rlast;
+assign hdm2ip_aximm0_rid    = mc_to_ip[0].rid;  
+assign hdm2ip_aximm0_rdata  = mc_to_ip[0].rdata;
+assign hdm2ip_aximm0_ruser  = mc_to_ip[0].ruser;
+assign hdm2ip_aximm0_rresp  = mc_to_ip[0].rresp;
+assign ip_to_mc[0].rready = ip2hdm_aximm0_rready;
+
+// channel 1
+// write address channel
+assign ip_to_mc[1].awvalid  = ip2hdm_aximm1_awvalid;
+assign ip_to_mc[1].awid     = ip2hdm_aximm1_awid;
+assign ip_to_mc[1].awaddr   = ip2hdm_aximm1_awaddr;
+assign ip_to_mc[1].awlen    = ip2hdm_aximm1_awlen;
+assign ip_to_mc[1].awregion = ip2hdm_aximm1_awregion;
+assign ip_to_mc[1].awuser   = ip2hdm_aximm1_awuser;
+assign ip_to_mc[1].awsize   = ip2hdm_aximm1_awsize;
+assign ip_to_mc[1].awburst  = ip2hdm_aximm1_awburst;
+assign ip_to_mc[1].awprot   = ip2hdm_aximm1_awprot;
+assign ip_to_mc[1].awqos    = ip2hdm_aximm1_awqos;
+assign ip_to_mc[1].awcache  = ip2hdm_aximm1_awcache;
+assign ip_to_mc[1].awlock   = ip2hdm_aximm1_awlock;
+assign hdm2ip_aximm1_awready = mc_to_ip[1].awready;
+// write data channel
+assign ip_to_mc[1].wvalid = ip2hdm_aximm1_wvalid;
+assign ip_to_mc[1].wdata  = ip2hdm_aximm1_wdata;
+assign ip_to_mc[1].wstrb  = ip2hdm_aximm1_wstrb;
+assign ip_to_mc[1].wlast  = ip2hdm_aximm1_wlast;
+assign ip_to_mc[1].wuser  = ip2hdm_aximm1_wuser;
+assign hdm2ip_aximm1_wready = mc_to_ip[1].wready;
+// write response channel
+assign hdm2ip_aximm1_bvalid = mc_to_ip[1].bvalid;
+assign hdm2ip_aximm1_bid    = mc_to_ip[1].bid;
+assign hdm2ip_aximm1_buser  = mc_to_ip[1].buser;
+assign hdm2ip_aximm1_bresp  = mc_to_ip[1].bresp;
+assign ip_to_mc[1].bready = ip2hdm_aximm1_bready;
+// read address channel
+assign ip_to_mc[1].arvalid  = ip2hdm_aximm1_arvalid;
+assign ip_to_mc[1].arid     = ip2hdm_aximm1_arid;
+assign ip_to_mc[1].araddr   = ip2hdm_aximm1_araddr;
+assign ip_to_mc[1].arlen    = ip2hdm_aximm1_arlen;
+assign ip_to_mc[1].arregion = ip2hdm_aximm1_arregion;
+assign ip_to_mc[1].aruser   = ip2hdm_aximm1_aruser;
+assign ip_to_mc[1].arsize   = ip2hdm_aximm1_arsize;
+assign ip_to_mc[1].arburst  = ip2hdm_aximm1_arburst;
+assign ip_to_mc[1].arprot   = ip2hdm_aximm1_arprot;
+assign ip_to_mc[1].arqos    = ip2hdm_aximm1_arqos;
+assign ip_to_mc[1].arcache  = ip2hdm_aximm1_arcache;
+assign ip_to_mc[1].arlock   = ip2hdm_aximm1_arlock;
+assign hdm2ip_aximm1_arready = mc_to_ip[1].arready;
+// read response channel
+assign hdm2ip_aximm1_rvalid = mc_to_ip[1].rvalid;
+assign hdm2ip_aximm1_rlast  = mc_to_ip[1].rlast;
+assign hdm2ip_aximm1_rid    = mc_to_ip[1].rid;  
+assign hdm2ip_aximm1_rdata  = mc_to_ip[1].rdata;
+assign hdm2ip_aximm1_ruser  = mc_to_ip[1].ruser;
+assign hdm2ip_aximm1_rresp  = mc_to_ip[1].rresp;
+assign ip_to_mc[1].rready = ip2hdm_aximm1_rready;
 
 //  logic [(cxlip_top_pkg::CXLIP_FULL_ADDR_MSB):(cxlip_top_pkg::CXLIP_FULL_ADDR_LSB)]    cxlip2iafu_chan_address_eclk            [cxlip_top_pkg::MC_CHANNEL-1:0];  //added from 22ww18a
 //
@@ -834,98 +938,98 @@ module afu_top(
 
 
 //Channel-0
- assign ip2hdm_aximm_awid    [0] = ip2hdm_aximm0_awid ;
- assign ip2hdm_aximm_awaddr  [0] = ip2hdm_aximm0_awaddr ;
- assign ip2hdm_aximm_awlen   [0] = ip2hdm_aximm0_awlen ;
- assign ip2hdm_aximm_awregion[0] = ip2hdm_aximm0_awregion ;
- assign ip2hdm_aximm_awuser  [0] = ip2hdm_aximm0_awuser ;
- assign ip2hdm_aximm_awsize  [0] = ip2hdm_aximm0_awsize  ;
- assign ip2hdm_aximm_awburst [0] = ip2hdm_aximm0_awburst ;
- assign ip2hdm_aximm_awprot  [0] = ip2hdm_aximm0_awprot  ;
- assign ip2hdm_aximm_awqos   [0] = ip2hdm_aximm0_awqos   ;
- assign ip2hdm_aximm_awcache [0] = ip2hdm_aximm0_awcache ;
- assign ip2hdm_aximm_awlock  [0] = ip2hdm_aximm0_awlock  ;
- assign ip2hdm_aximm_awvalid [0] = ip2hdm_aximm0_awvalid;
- assign ip2hdm_aximm_wdata   [0] = ip2hdm_aximm0_wdata ;
- assign ip2hdm_aximm_wstrb   [0] = ip2hdm_aximm0_wstrb ;
- assign ip2hdm_aximm_wlast   [0] = ip2hdm_aximm0_wlast ;
- assign ip2hdm_aximm_wuser   [0] = ip2hdm_aximm0_wuser ;
- assign ip2hdm_aximm_wvalid  [0] = ip2hdm_aximm0_wvalid;
- assign ip2hdm_aximm_bready  [0] = ip2hdm_aximm0_bready ;
- assign ip2hdm_aximm_arid    [0] = ip2hdm_aximm0_arid ;
- assign ip2hdm_aximm_araddr  [0] = ip2hdm_aximm0_araddr ;
- assign ip2hdm_aximm_arlen   [0] = ip2hdm_aximm0_arlen ;
- assign ip2hdm_aximm_arregion[0] = ip2hdm_aximm0_arregion ;
- assign ip2hdm_aximm_aruser  [0] = ip2hdm_aximm0_aruser ;
- assign ip2hdm_aximm_arsize  [0] = ip2hdm_aximm0_arsize ;
- assign ip2hdm_aximm_arburst [0] = ip2hdm_aximm0_arburst ;
- assign ip2hdm_aximm_arprot  [0] = ip2hdm_aximm0_arprot  ;
- assign ip2hdm_aximm_arqos   [0] = ip2hdm_aximm0_arqos  ;
- assign ip2hdm_aximm_arcache [0] = ip2hdm_aximm0_arcache ;
- assign ip2hdm_aximm_arlock  [0] = ip2hdm_aximm0_arlock ;
- assign ip2hdm_aximm_arvalid [0] = ip2hdm_aximm0_arvalid;
- assign ip2hdm_aximm_rready  [0] = ip2hdm_aximm0_rready ;
+ assign ip2hdm_aximm_awid    [0] = ip_to_mc[0].awid ;
+ assign ip2hdm_aximm_awaddr  [0] = ip_to_mc[0].awaddr ;
+ assign ip2hdm_aximm_awlen   [0] = ip_to_mc[0].awlen ;
+ assign ip2hdm_aximm_awregion[0] = ip_to_mc[0].awregion ;
+ assign ip2hdm_aximm_awuser  [0] = ip_to_mc[0].awuser ;
+ assign ip2hdm_aximm_awsize  [0] = ip_to_mc[0].awsize  ;
+ assign ip2hdm_aximm_awburst [0] = ip_to_mc[0].awburst ;
+ assign ip2hdm_aximm_awprot  [0] = ip_to_mc[0].awprot  ;
+ assign ip2hdm_aximm_awqos   [0] = ip_to_mc[0].awqos   ;
+ assign ip2hdm_aximm_awcache [0] = ip_to_mc[0].awcache ;
+ assign ip2hdm_aximm_awlock  [0] = ip_to_mc[0].awlock  ;
+ assign ip2hdm_aximm_awvalid [0] = ip_to_mc[0].awvalid;
+ assign ip2hdm_aximm_wdata   [0] = ip_to_mc[0].wdata ;
+ assign ip2hdm_aximm_wstrb   [0] = ip_to_mc[0].wstrb ;
+ assign ip2hdm_aximm_wlast   [0] = ip_to_mc[0].wlast ;
+ assign ip2hdm_aximm_wuser   [0] = ip_to_mc[0].wuser ;
+ assign ip2hdm_aximm_wvalid  [0] = ip_to_mc[0].wvalid;
+ assign ip2hdm_aximm_bready  [0] = ip_to_mc[0].bready ;
+ assign ip2hdm_aximm_arid    [0] = ip_to_mc[0].arid ;
+ assign ip2hdm_aximm_araddr  [0] = ip_to_mc[0].araddr ;
+ assign ip2hdm_aximm_arlen   [0] = ip_to_mc[0].arlen ;
+ assign ip2hdm_aximm_arregion[0] = ip_to_mc[0].arregion ;
+ assign ip2hdm_aximm_aruser  [0] = ip_to_mc[0].aruser ;
+ assign ip2hdm_aximm_arsize  [0] = ip_to_mc[0].arsize ;
+ assign ip2hdm_aximm_arburst [0] = ip_to_mc[0].arburst ;
+ assign ip2hdm_aximm_arprot  [0] = ip_to_mc[0].arprot  ;
+ assign ip2hdm_aximm_arqos   [0] = ip_to_mc[0].arqos  ;
+ assign ip2hdm_aximm_arcache [0] = ip_to_mc[0].arcache ;
+ assign ip2hdm_aximm_arlock  [0] = ip_to_mc[0].arlock ;
+ assign ip2hdm_aximm_arvalid [0] = ip_to_mc[0].arvalid;
+ assign ip2hdm_aximm_rready  [0] = ip_to_mc[0].rready ;
  
- assign hdm2ip_aximm0_awready    =  hdm2ip_aximm_awready[0] ;
- assign hdm2ip_aximm0_wready     =  hdm2ip_aximm_wready [0] ;
- assign hdm2ip_aximm0_bvalid     =  hdm2ip_aximm_bvalid [0] ;
- assign hdm2ip_aximm0_bid        =  hdm2ip_aximm_bid    [0] ;
- assign hdm2ip_aximm0_buser      =  hdm2ip_aximm_buser  [0] ;
- assign hdm2ip_aximm0_bresp      =  hdm2ip_aximm_bresp  [0] ;
- assign hdm2ip_aximm0_arready    =  hdm2ip_aximm_arready[0] ;
- assign hdm2ip_aximm0_rvalid     =  hdm2ip_aximm_rvalid [0] ;
- assign hdm2ip_aximm0_rlast      =  hdm2ip_aximm_rlast  [0] ;
- assign hdm2ip_aximm0_rid        =  hdm2ip_aximm_rid    [0] ;
- assign hdm2ip_aximm0_rdata      =  hdm2ip_aximm_rdata  [0] ;
- assign hdm2ip_aximm0_ruser      =  hdm2ip_aximm_ruser  [0] ;
- assign hdm2ip_aximm0_rresp      =  hdm2ip_aximm_rresp  [0] ;
+ assign mc_to_ip[0].awready    =  hdm2ip_aximm_awready[0] ;
+ assign mc_to_ip[0].wready     =  hdm2ip_aximm_wready [0] ;
+ assign mc_to_ip[0].bvalid     =  hdm2ip_aximm_bvalid [0] ;
+ assign mc_to_ip[0].bid        =  hdm2ip_aximm_bid    [0] ;
+ assign mc_to_ip[0].buser      =  hdm2ip_aximm_buser  [0] ;
+ assign mc_to_ip[0].bresp      =  hdm2ip_aximm_bresp  [0] ;
+ assign mc_to_ip[0].arready    =  hdm2ip_aximm_arready[0] ;
+ assign mc_to_ip[0].rvalid     =  hdm2ip_aximm_rvalid [0] ;
+ assign mc_to_ip[0].rlast      =  hdm2ip_aximm_rlast  [0] ;
+ assign mc_to_ip[0].rid        =  hdm2ip_aximm_rid    [0] ;
+ assign mc_to_ip[0].rdata      =  hdm2ip_aximm_rdata  [0] ;
+ assign mc_to_ip[0].ruser      =  hdm2ip_aximm_ruser  [0] ;
+ assign mc_to_ip[0].rresp      =  hdm2ip_aximm_rresp  [0] ;
 
 //Channel-1
- assign ip2hdm_aximm_awid    [1] = ip2hdm_aximm1_awid ;
- assign ip2hdm_aximm_awaddr  [1] = ip2hdm_aximm1_awaddr ;
- assign ip2hdm_aximm_awlen   [1] = ip2hdm_aximm1_awlen ;
- assign ip2hdm_aximm_awregion[1] = ip2hdm_aximm1_awregion ;
- assign ip2hdm_aximm_awuser  [1] = ip2hdm_aximm1_awuser ;
- assign ip2hdm_aximm_awsize  [1] = ip2hdm_aximm1_awsize  ;
- assign ip2hdm_aximm_awburst [1] = ip2hdm_aximm1_awburst ;
- assign ip2hdm_aximm_awprot  [1] = ip2hdm_aximm1_awprot  ;
- assign ip2hdm_aximm_awqos   [1] = ip2hdm_aximm1_awqos   ;
- assign ip2hdm_aximm_awcache [1] = ip2hdm_aximm1_awcache ;
- assign ip2hdm_aximm_awlock  [1] = ip2hdm_aximm1_awlock  ;
- assign ip2hdm_aximm_awvalid [1] = ip2hdm_aximm1_awvalid;
- assign ip2hdm_aximm_wdata   [1] = ip2hdm_aximm1_wdata ;
- assign ip2hdm_aximm_wstrb   [1] = ip2hdm_aximm1_wstrb ;
- assign ip2hdm_aximm_wlast   [1] = ip2hdm_aximm1_wlast ;
- assign ip2hdm_aximm_wuser   [1] = ip2hdm_aximm1_wuser ;
- assign ip2hdm_aximm_wvalid  [1] = ip2hdm_aximm1_wvalid;
- assign ip2hdm_aximm_bready  [1] = ip2hdm_aximm1_bready ;
- assign ip2hdm_aximm_arid    [1] = ip2hdm_aximm1_arid ;
- assign ip2hdm_aximm_araddr  [1] = ip2hdm_aximm1_araddr ;
- assign ip2hdm_aximm_arlen   [1] = ip2hdm_aximm1_arlen ;
- assign ip2hdm_aximm_arregion[1] = ip2hdm_aximm1_arregion ;
- assign ip2hdm_aximm_aruser  [1] = ip2hdm_aximm1_aruser ;
- assign ip2hdm_aximm_arsize  [1] = ip2hdm_aximm1_arsize ;
- assign ip2hdm_aximm_arburst [1] = ip2hdm_aximm1_arburst ;
- assign ip2hdm_aximm_arprot  [1] = ip2hdm_aximm1_arprot  ;
- assign ip2hdm_aximm_arqos   [1] = ip2hdm_aximm1_arqos  ;
- assign ip2hdm_aximm_arcache [1] = ip2hdm_aximm1_arcache ;
- assign ip2hdm_aximm_arlock  [1] = ip2hdm_aximm1_arlock ;
- assign ip2hdm_aximm_arvalid [1] = ip2hdm_aximm1_arvalid;
- assign ip2hdm_aximm_rready  [1] = ip2hdm_aximm1_rready ;
+ assign ip2hdm_aximm_awid    [1] = ip_to_mc[1].awid ;
+ assign ip2hdm_aximm_awaddr  [1] = ip_to_mc[1].awaddr ;
+ assign ip2hdm_aximm_awlen   [1] = ip_to_mc[1].awlen ;
+ assign ip2hdm_aximm_awregion[1] = ip_to_mc[1].awregion ;
+ assign ip2hdm_aximm_awuser  [1] = ip_to_mc[1].awuser ;
+ assign ip2hdm_aximm_awsize  [1] = ip_to_mc[1].awsize  ;
+ assign ip2hdm_aximm_awburst [1] = ip_to_mc[1].awburst ;
+ assign ip2hdm_aximm_awprot  [1] = ip_to_mc[1].awprot  ;
+ assign ip2hdm_aximm_awqos   [1] = ip_to_mc[1].awqos   ;
+ assign ip2hdm_aximm_awcache [1] = ip_to_mc[1].awcache ;
+ assign ip2hdm_aximm_awlock  [1] = ip_to_mc[1].awlock  ;
+ assign ip2hdm_aximm_awvalid [1] = ip_to_mc[1].awvalid;
+ assign ip2hdm_aximm_wdata   [1] = ip_to_mc[1].wdata ;
+ assign ip2hdm_aximm_wstrb   [1] = ip_to_mc[1].wstrb ;
+ assign ip2hdm_aximm_wlast   [1] = ip_to_mc[1].wlast ;
+ assign ip2hdm_aximm_wuser   [1] = ip_to_mc[1].wuser ;
+ assign ip2hdm_aximm_wvalid  [1] = ip_to_mc[1].wvalid;
+ assign ip2hdm_aximm_bready  [1] = ip_to_mc[1].bready ;
+ assign ip2hdm_aximm_arid    [1] = ip_to_mc[1].arid ;
+ assign ip2hdm_aximm_araddr  [1] = ip_to_mc[1].araddr ;
+ assign ip2hdm_aximm_arlen   [1] = ip_to_mc[1].arlen ;
+ assign ip2hdm_aximm_arregion[1] = ip_to_mc[1].arregion ;
+ assign ip2hdm_aximm_aruser  [1] = ip_to_mc[1].aruser ;
+ assign ip2hdm_aximm_arsize  [1] = ip_to_mc[1].arsize ;
+ assign ip2hdm_aximm_arburst [1] = ip_to_mc[1].arburst ;
+ assign ip2hdm_aximm_arprot  [1] = ip_to_mc[1].arprot  ;
+ assign ip2hdm_aximm_arqos   [1] = ip_to_mc[1].arqos  ;
+ assign ip2hdm_aximm_arcache [1] = ip_to_mc[1].arcache ;
+ assign ip2hdm_aximm_arlock  [1] = ip_to_mc[1].arlock ;
+ assign ip2hdm_aximm_arvalid [1] = ip_to_mc[1].arvalid;
+ assign ip2hdm_aximm_rready  [1] = ip_to_mc[1].rready ;
  
- assign hdm2ip_aximm1_awready    =  hdm2ip_aximm_awready[1] ;
- assign hdm2ip_aximm1_wready     =  hdm2ip_aximm_wready [1] ;
- assign hdm2ip_aximm1_bvalid     =  hdm2ip_aximm_bvalid [1] ;
- assign hdm2ip_aximm1_bid        =  hdm2ip_aximm_bid    [1] ;
- assign hdm2ip_aximm1_buser      =  hdm2ip_aximm_buser  [1] ;
- assign hdm2ip_aximm1_bresp      =  hdm2ip_aximm_bresp  [1] ;
- assign hdm2ip_aximm1_arready    =  hdm2ip_aximm_arready[1] ;
- assign hdm2ip_aximm1_rvalid     =  hdm2ip_aximm_rvalid [1] ;
- assign hdm2ip_aximm1_rlast      =  hdm2ip_aximm_rlast  [1] ;
- assign hdm2ip_aximm1_rid        =  hdm2ip_aximm_rid    [1] ;
- assign hdm2ip_aximm1_rdata      =  hdm2ip_aximm_rdata  [1] ;
- assign hdm2ip_aximm1_ruser      =  hdm2ip_aximm_ruser  [1] ;
- assign hdm2ip_aximm1_rresp      =  hdm2ip_aximm_rresp  [1] ;
+ assign mc_to_ip[1].awready    =  hdm2ip_aximm_awready[1] ;
+ assign mc_to_ip[1].wready     =  hdm2ip_aximm_wready [1] ;
+ assign mc_to_ip[1].bvalid     =  hdm2ip_aximm_bvalid [1] ;
+ assign mc_to_ip[1].bid        =  hdm2ip_aximm_bid    [1] ;
+ assign mc_to_ip[1].buser      =  hdm2ip_aximm_buser  [1] ;
+ assign mc_to_ip[1].bresp      =  hdm2ip_aximm_bresp  [1] ;
+ assign mc_to_ip[1].arready    =  hdm2ip_aximm_arready[1] ;
+ assign mc_to_ip[1].rvalid     =  hdm2ip_aximm_rvalid [1] ;
+ assign mc_to_ip[1].rlast      =  hdm2ip_aximm_rlast  [1] ;
+ assign mc_to_ip[1].rid        =  hdm2ip_aximm_rid    [1] ;
+ assign mc_to_ip[1].rdata      =  hdm2ip_aximm_rdata  [1] ;
+ assign mc_to_ip[1].ruser      =  hdm2ip_aximm_ruser  [1] ;
+ assign mc_to_ip[1].rresp      =  hdm2ip_aximm_rresp  [1] ;
 
 
 `endif	
