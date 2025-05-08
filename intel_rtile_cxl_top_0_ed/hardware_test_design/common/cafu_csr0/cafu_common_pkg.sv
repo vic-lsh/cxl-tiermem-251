@@ -311,7 +311,7 @@ localparam CAFU_TYPE1_CDAT_1 = 32'h0000AA01;        // CDAT Checksum and Rev.
 
 // @@copy for common_afu_pkg@@start
 localparam CAFU_TYPE3_CDAT_0 = 32'h00000058;        // CDAT Length
-localparam CAFU_TYPE3_CDAT_1 = 32'h00005501;        // CDAT Checksum and Rev.
+localparam CAFU_TYPE3_CDAT_1 = 32'h00002801;        // CDAT Checksum and Rev.
 
 
 // parameters and structs copied from CXLIP for the CXLIP-to-CAFU AXI interface

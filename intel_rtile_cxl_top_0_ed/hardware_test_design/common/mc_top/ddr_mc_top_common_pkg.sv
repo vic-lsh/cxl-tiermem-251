@@ -146,7 +146,7 @@ localparam MCTOP_MC_HA_DDR4_DBI_WIDTH      = 9;
 
 localparam MCTOP_MEMCNTRL_ADDR_WIDTH = 46;
 
-localparam MCTOP_EMIF_AMM_ADDR_WIDTH      = 27;
+localparam MCTOP_EMIF_AMM_ADDR_WIDTH      = 30;
 localparam MCTOP_EMIF_AMM_DATA_WIDTH      = 576;
 localparam MCTOP_EMIF_AMM_BURST_WIDTH     = 7;
 localparam MCTOP_EMIF_AMM_BE_WIDTH        = 72;
