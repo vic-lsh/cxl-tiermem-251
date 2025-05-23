@@ -852,6 +852,7 @@ module afu_top(
  assign ip2hdm_aximm_wuser   [0] = ip2hdm_aximm0_wuser ;
  assign ip2hdm_aximm_wvalid  [0] = ip2hdm_aximm0_wvalid;
  assign ip2hdm_aximm_bready  [0] = ip2hdm_aximm0_bready ;
+/*
  assign ip2hdm_aximm_arid    [0] = ip2hdm_aximm0_arid ;
  assign ip2hdm_aximm_araddr  [0] = ip2hdm_aximm0_araddr ;
  assign ip2hdm_aximm_arlen   [0] = ip2hdm_aximm0_arlen ;
@@ -864,6 +865,7 @@ module afu_top(
  assign ip2hdm_aximm_arcache [0] = ip2hdm_aximm0_arcache ;
  assign ip2hdm_aximm_arlock  [0] = ip2hdm_aximm0_arlock ;
  assign ip2hdm_aximm_arvalid [0] = ip2hdm_aximm0_arvalid;
+*/
  assign ip2hdm_aximm_rready  [0] = ip2hdm_aximm0_rready ;
  
  assign hdm2ip_aximm0_awready    =  hdm2ip_aximm_awready[0] ;
@@ -872,7 +874,9 @@ module afu_top(
  assign hdm2ip_aximm0_bid        =  hdm2ip_aximm_bid    [0] ;
  assign hdm2ip_aximm0_buser      =  hdm2ip_aximm_buser  [0] ;
  assign hdm2ip_aximm0_bresp      =  hdm2ip_aximm_bresp  [0] ;
+/*
  assign hdm2ip_aximm0_arready    =  hdm2ip_aximm_arready[0] ;
+*/
  assign hdm2ip_aximm0_rvalid     =  hdm2ip_aximm_rvalid [0] ;
  assign hdm2ip_aximm0_rlast      =  hdm2ip_aximm_rlast  [0] ;
  assign hdm2ip_aximm0_rid        =  hdm2ip_aximm_rid    [0] ;
@@ -899,6 +903,7 @@ module afu_top(
  assign ip2hdm_aximm_wuser   [1] = ip2hdm_aximm1_wuser ;
  assign ip2hdm_aximm_wvalid  [1] = ip2hdm_aximm1_wvalid;
  assign ip2hdm_aximm_bready  [1] = ip2hdm_aximm1_bready ;
+/*
  assign ip2hdm_aximm_arid    [1] = ip2hdm_aximm1_arid ;
  assign ip2hdm_aximm_araddr  [1] = ip2hdm_aximm1_araddr ;
  assign ip2hdm_aximm_arlen   [1] = ip2hdm_aximm1_arlen ;
@@ -911,6 +916,7 @@ module afu_top(
  assign ip2hdm_aximm_arcache [1] = ip2hdm_aximm1_arcache ;
  assign ip2hdm_aximm_arlock  [1] = ip2hdm_aximm1_arlock ;
  assign ip2hdm_aximm_arvalid [1] = ip2hdm_aximm1_arvalid;
+*/
  assign ip2hdm_aximm_rready  [1] = ip2hdm_aximm1_rready ;
  
  assign hdm2ip_aximm1_awready    =  hdm2ip_aximm_awready[1] ;
@@ -919,13 +925,23 @@ module afu_top(
  assign hdm2ip_aximm1_bid        =  hdm2ip_aximm_bid    [1] ;
  assign hdm2ip_aximm1_buser      =  hdm2ip_aximm_buser  [1] ;
  assign hdm2ip_aximm1_bresp      =  hdm2ip_aximm_bresp  [1] ;
+/*
  assign hdm2ip_aximm1_arready    =  hdm2ip_aximm_arready[1] ;
+*/
  assign hdm2ip_aximm1_rvalid     =  hdm2ip_aximm_rvalid [1] ;
  assign hdm2ip_aximm1_rlast      =  hdm2ip_aximm_rlast  [1] ;
  assign hdm2ip_aximm1_rid        =  hdm2ip_aximm_rid    [1] ;
  assign hdm2ip_aximm1_rdata      =  hdm2ip_aximm_rdata  [1] ;
  assign hdm2ip_aximm1_ruser      =  hdm2ip_aximm_ruser  [1] ;
  assign hdm2ip_aximm1_rresp      =  hdm2ip_aximm_rresp  [1] ;
+
+sync_fifo #(
+	.LOG_DEPTH(8),
+	.WIDTH(AR_WIDTH),
+	.USE_LUTRAM(1)
+) fifo_inst (
+	.clk(
+);
 
 
 `endif	
@@ -959,6 +975,161 @@ assign iafu2mc_req_mdata_eclk               = cxlip2iafu_req_mdata_eclk     ;
 
 
 endmodule
+
+////////////////////////////////////////////////
+// Generic Synchronous FIFO, Lookahead on
+////////////////////////////////////////////////
+
+module sync_fifo
+#(
+    parameter LOG_DEPTH       = 10,
+    parameter WIDTH           = 32,
+	parameter USE_LUTRAM      = 0
+)
+(
+    input                 rst,
+    input                 clk,
+    
+    input                 wrreq,
+    input [WIDTH-1:0]     data,
+    
+    input                 rdreq,
+    output [WIDTH-1:0]    q,
+    
+    output                full,
+    output                empty
+);
+
+generate;
+    if (LOG_DEPTH <= 1) begin
+        module_that_doesnt_exist depth_must_be_at_least_four();
+    end
+endgenerate
+
+    scfifo  scfifo_component (
+                .clock (clk),
+                .data (data),
+                .rdreq (rdreq),
+                .wrreq (wrreq),
+                .almost_empty (),
+                .almost_full (),
+                .empty (empty),
+                .full (full),
+                .q (q),
+                .usedw (),
+                .aclr (1'b0),
+                .eccstatus (),
+                .sclr (rst));
+    
+    defparam
+        scfifo_component.add_ram_output_register  = "ON",
+        scfifo_component.almost_empty_value  = 3,
+        scfifo_component.almost_full_value  = 2**LOG_DEPTH-3,
+        scfifo_component.lpm_hint = (USE_LUTRAM == 1) ? "RAM_BLOCK_TYPE=MLAB" : "RAM_BLOCK_TYPE=M20K",
+        scfifo_component.enable_ecc  = "FALSE",
+        scfifo_component.intended_device_family  = "Agilex",
+        scfifo_component.lpm_numwords  = 2**LOG_DEPTH,
+        scfifo_component.lpm_showahead  = "ON",
+        scfifo_component.lpm_type  = "scfifo",
+        scfifo_component.lpm_width  = WIDTH,
+        scfifo_component.lpm_widthu  = LOG_DEPTH,
+        scfifo_component.overflow_checking  = "ON",
+        scfifo_component.underflow_checking  = "ON",
+        scfifo_component.use_eab  = "ON";
+
+
+endmodule: sync_fifo
+
+// TODO: build FIFO 1, FIFO 1 with AROR off, FIFO 2
+// TODO: test those with numa mode instead of /dev/dax
+
+// Generic FIFO version 2
+/*
+
+	FIFO not using block RAM, needed for simulation
+
+	Author: Ahmed Khawaja
+
+
+*/
+
+module SoftFIFO  #(parameter WIDTH = 512, LOG_DEPTH = 9)
+(
+	// General signals
+	input  clock,
+	input  reset_n,
+	// Data in and write enable
+	input  wrreq, //enq					
+	input[WIDTH-1:0] data,// data in            
+	output full,                   
+	output[WIDTH-1:0] q, // data out
+	output empty,              
+	input  rdreq // deq    
+);
+
+logic[WIDTH-1:0] buffer[(1 << LOG_DEPTH)-1:0];
+
+logic[LOG_DEPTH:0] counter;
+logic[LOG_DEPTH:0]  new_counter;
+logic[LOG_DEPTH-1:0] rd_ptr, wr_ptr; 
+logic[LOG_DEPTH-1:0]  new_rd_ptr, new_wr_ptr;
+logic empty_reg, new_empty_reg;
+
+assign empty = empty_reg;
+assign full  = counter[LOG_DEPTH];
+assign q     = buffer[rd_ptr];
+
+always @(posedge clock) begin
+	if (!reset_n) begin
+		counter <= 0;
+		rd_ptr  <= 0;
+		wr_ptr  <= 0;
+		empty_reg <= 1;
+	end else begin
+		counter <= new_counter;
+		rd_ptr  <= new_rd_ptr;
+		wr_ptr  <= new_wr_ptr;
+		empty_reg <= new_empty_reg;
+	end
+end
+
+always @(posedge clock) begin
+	if (!full && wrreq) begin
+		buffer[wr_ptr] <= data;
+	end
+end
+
+always_comb begin
+	if (!full && wrreq) begin
+		new_wr_ptr = wr_ptr + 1;
+	end else begin
+		new_wr_ptr = wr_ptr;
+	end
+
+	if (!empty && rdreq) begin
+		new_rd_ptr = rd_ptr + 1;
+	end else begin
+		new_rd_ptr = rd_ptr;
+	end
+	
+	if ((!full && wrreq) && (!empty && rdreq)) begin
+		new_counter = counter;
+		new_empty_reg = 0;
+	end	else if (!full && wrreq) begin
+		new_counter = counter + 1;
+		new_empty_reg = 0;
+	end else if (!empty && rdreq) begin
+		new_counter = counter - 1;
+		new_empty_reg = (counter == 1);
+	end else begin
+		new_counter = counter;
+		new_empty_reg =	empty_reg;
+	end
+end
+
+endmodule 
+
+
 `ifdef QUESTA_INTEL_OEM
 `pragma questa_oem_00 "xOiMljyL+uEG4POJPfCL4p5v8YxX3yRYbM/Lvsk+r2yHjggdh2qskEj/0KRQ3+PEhBaUYq1/BqG8Yv2Si7VVH0jVEPw5rrxpaRXSzzVL6+z1QOpVXV0BqMuMzgRIAm9iJBd56K7WBlHO+OiDPfSEju3siYKQ0p6m4nCaQ1Mu1bEKBRXapesxsjTaDwLjA2d6l7rjbnzSdjUNvgk8V++w225chQSu0hR3a9RzKBKy7+GTymVGuIWOjaH0p8nVkuokHQ3arxoJadBYYff36JfMjYBHswB7CXbvNDizHTQtbiPHroBb6LuixWP30KAI2vQpbPAf3Gf0DVv5ccdcuqZN7Y0Gtlo/fiUbevfvYmaokd8JIc2E0fQ8ZXYE/bXZ+cCirM5Lh3lr6X+cmqZfaLMypZgdoO8xrvDFHYt0Hp5sT6xsz3rqLR69bRZvqzIk60O/mVKvk29KjZA0AbgfUuJx/9cc3U+HI5tujElfwVtgA43fG26kRJxvhTu+2iAMGvY3B4gMPPw/v1o4ukPmDOOACIFys1hy7yBp71QVNCetV1N3MbRWCjJmruR5LtAsxfrfSsnzXXsmujIo+CJ1s2LGB6j3SzTFzcC4e8hQKUIbZ6BZ5KOeBHWxA4f1w34calcsngccvQ9lJh69CNocc+anqdVgb5VlbRtvq+rF1xb/lP84ceih56vXRsX92qsLLN0ydT0X6QizOoeF1yYGNZUcS0aZXPc/cNjfA+ZuSUHoQpxOfarrSNJ5e+RBWHfthXQ9SosJaSgqaBZeydyBJdfrViC8xhzsP+iiSplD7QJdgoh5Lo/QyuIuh5ECkcnhAKh6n/XTOJwjLnx7TUPyHkQIRAnhzDsIBqWX/ezpzHnrXg/3R5liynNTUh9Id0T2X4MdeGNulOKxUzMGLW6L8JuVUvkI8B/KMxKJy5TaW3Mkln4v38ucRO/2ZetzApewHHM2aXWGo5M5mQ66X2ElEhr2Cxa5YCvGmKfCN1IqLBD3S+2FsDITdAbieCeCEYkkzOiy"
 `endif
