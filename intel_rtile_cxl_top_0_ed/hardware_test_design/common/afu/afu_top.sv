@@ -955,6 +955,13 @@ localparam AR_WIDTH = 0
                         + 0;
 
 localparam USE_IPFIFO = 0;
+logic fifo_full[2];
+logic fifo_empty[2];
+
+assign hdm2ip_aximm0_arready = ~fifo_full[0];
+assign ip2hdm_aximm_arvalid[0] = ~fifo_empty[0];
+assign hdm2ip_aximm1_arready = ~fifo_full[1];
+assign ip2hdm_aximm_arvalid[1] = ~fifo_empty[1];
 
 if (USE_IPFIFO) begin
 sync_fifo #(
@@ -967,11 +974,11 @@ sync_fifo #(
 
     .wrreq(ip2hdm_aximm0_arvalid),
     .data({ip2hdm_aximm0_arid, ip2hdm_aximm0_araddr, ip2hdm_aximm0_arlen, ip2hdm_aximm0_arregion, ip2hdm_aximm0_aruser, ip2hdm_aximm0_arsize, ip2hdm_aximm0_arburst, ip2hdm_aximm0_arprot, ip2hdm_aximm0_arqos, ip2hdm_aximm0_arcache, ip2hdm_aximm0_arlock}),
-    .full(~hdm2ip_aximm0_arready),
+    .full(fifo_full[0]),
 
     .rdreq(hdm2ip_aximm_arready[0]),
     .q({ip2hdm_aximm_arid[0], ip2hdm_aximm_araddr[0], ip2hdm_aximm_arlen[0], ip2hdm_aximm_arregion[0], ip2hdm_aximm_aruser[0], ip2hdm_aximm_arsize[0], ip2hdm_aximm_arburst[0], ip2hdm_aximm_arprot[0], ip2hdm_aximm_arqos[0], ip2hdm_aximm_arcache[0], ip2hdm_aximm_arlock[0]}),
-    .empty(~ip2hdm_aximm_arvalid[0])
+    .empty(fifo_empty[0])
 );
 
 sync_fifo #(
@@ -984,11 +991,11 @@ sync_fifo #(
 
     .wrreq(ip2hdm_aximm1_arvalid),
     .data({ip2hdm_aximm1_arid, ip2hdm_aximm1_araddr, ip2hdm_aximm1_arlen, ip2hdm_aximm1_arregion, ip2hdm_aximm1_aruser, ip2hdm_aximm1_arsize, ip2hdm_aximm1_arburst, ip2hdm_aximm1_arprot, ip2hdm_aximm1_arqos, ip2hdm_aximm1_arcache, ip2hdm_aximm1_arlock}),
-    .full(~hdm2ip_aximm1_arready),
+    .full(fifo_full[1]),
 
     .rdreq(hdm2ip_aximm_arready[1]),
     .q({ip2hdm_aximm_arid[1], ip2hdm_aximm_araddr[1], ip2hdm_aximm_arlen[1], ip2hdm_aximm_arregion[1], ip2hdm_aximm_aruser[1], ip2hdm_aximm_arsize[1], ip2hdm_aximm_arburst[1], ip2hdm_aximm_arprot[1], ip2hdm_aximm_arqos[1], ip2hdm_aximm_arcache[1], ip2hdm_aximm_arlock[1]}),
-    .empty(~ip2hdm_aximm_arvalid[1])
+    .empty(fifo_empty[1])
 );
 end else begin
 
@@ -1001,11 +1008,11 @@ SoftFIFO #(
 
     .wrreq(ip2hdm_aximm0_arvalid),
     .data({ip2hdm_aximm0_arid, ip2hdm_aximm0_araddr, ip2hdm_aximm0_arlen, ip2hdm_aximm0_arregion, ip2hdm_aximm0_aruser, ip2hdm_aximm0_arsize, ip2hdm_aximm0_arburst, ip2hdm_aximm0_arprot, ip2hdm_aximm0_arqos, ip2hdm_aximm0_arcache, ip2hdm_aximm0_arlock}),
-    .full(~hdm2ip_aximm0_arready),
+    .full(fifo_full[0]),
 
     .rdreq(hdm2ip_aximm_arready[0]),
     .q({ip2hdm_aximm_arid[0], ip2hdm_aximm_araddr[0], ip2hdm_aximm_arlen[0], ip2hdm_aximm_arregion[0], ip2hdm_aximm_aruser[0], ip2hdm_aximm_arsize[0], ip2hdm_aximm_arburst[0], ip2hdm_aximm_arprot[0], ip2hdm_aximm_arqos[0], ip2hdm_aximm_arcache[0], ip2hdm_aximm_arlock[0]}),
-    .empty(~ip2hdm_aximm_arvalid[0])
+    .empty(fifo_empty[0])
 );
 
 SoftFIFO #(
@@ -1017,11 +1024,11 @@ SoftFIFO #(
 
     .wrreq(ip2hdm_aximm1_arvalid),
     .data({ip2hdm_aximm1_arid, ip2hdm_aximm1_araddr, ip2hdm_aximm1_arlen, ip2hdm_aximm1_arregion, ip2hdm_aximm1_aruser, ip2hdm_aximm1_arsize, ip2hdm_aximm1_arburst, ip2hdm_aximm1_arprot, ip2hdm_aximm1_arqos, ip2hdm_aximm1_arcache, ip2hdm_aximm1_arlock}),
-    .full(~hdm2ip_aximm1_arready),
+    .full(fifo_full[1]),
 
     .rdreq(hdm2ip_aximm_arready[1]),
     .q({ip2hdm_aximm_arid[1], ip2hdm_aximm_araddr[1], ip2hdm_aximm_arlen[1], ip2hdm_aximm_arregion[1], ip2hdm_aximm_aruser[1], ip2hdm_aximm_arsize[1], ip2hdm_aximm_arburst[1], ip2hdm_aximm_arprot[1], ip2hdm_aximm_arqos[1], ip2hdm_aximm_arcache[1], ip2hdm_aximm_arlock[1]}),
-    .empty(~ip2hdm_aximm_arvalid[1])
+    .empty(fifo_empty[1])
 );
 
 end
