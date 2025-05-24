@@ -954,9 +954,9 @@ localparam AR_WIDTH = 0
                         + 2  //  input logic  [1:0]   ip2hdm_aximm0_arlock     ,         
                         + 0;
 
-localparam USE_SOFTFIFO = 0;
+localparam USE_IPFIFO = 0;
 
-if (USE_SOFTFIFO) begin
+if (USE_IPFIFO) begin
 sync_fifo #(
 	.LOG_DEPTH(8),
 	.WIDTH(AR_WIDTH),
