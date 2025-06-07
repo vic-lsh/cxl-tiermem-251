@@ -34,6 +34,8 @@ import cxlip_top_pkg::*;
 import ddr_mc_top_common_pkg::*;
 
 module afu_top(
+    input logic clk,
+    input logic rst_n,
 
   `ifdef OOORSP_MC_AXI2AVMM 
 `ifdef ENABLE_1_SLICE   
@@ -852,18 +854,75 @@ module afu_top(
  assign ip2hdm_aximm_wuser   [0] = ip2hdm_aximm0_wuser ;
  assign ip2hdm_aximm_wvalid  [0] = ip2hdm_aximm0_wvalid;
  assign ip2hdm_aximm_bready  [0] = ip2hdm_aximm0_bready ;
- assign ip2hdm_aximm_arid    [0] = ip2hdm_aximm0_arid ;
- assign ip2hdm_aximm_araddr  [0] = ip2hdm_aximm0_araddr ;
- assign ip2hdm_aximm_arlen   [0] = ip2hdm_aximm0_arlen ;
- assign ip2hdm_aximm_arregion[0] = ip2hdm_aximm0_arregion ;
- assign ip2hdm_aximm_aruser  [0] = ip2hdm_aximm0_aruser ;
- assign ip2hdm_aximm_arsize  [0] = ip2hdm_aximm0_arsize ;
- assign ip2hdm_aximm_arburst [0] = ip2hdm_aximm0_arburst ;
- assign ip2hdm_aximm_arprot  [0] = ip2hdm_aximm0_arprot  ;
- assign ip2hdm_aximm_arqos   [0] = ip2hdm_aximm0_arqos  ;
- assign ip2hdm_aximm_arcache [0] = ip2hdm_aximm0_arcache ;
- assign ip2hdm_aximm_arlock  [0] = ip2hdm_aximm0_arlock ;
- assign ip2hdm_aximm_arvalid [0] = ip2hdm_aximm0_arvalid;
+
+ //adding FIFO on the AR channel 0
+ typedef struct packed {
+    logic  [7:0]   arid       ;         
+    logic  [51:0]  araddr     ;         
+    logic  [9:0]   arlen      ;         
+    logic  [3:0]   arregion   ;         
+    logic          aruser     ;         
+    logic  [2:0]   arsize     ;         
+    logic  [1:0]   arburst    ;         
+    logic  [2:0]   arprot     ;         
+    logic  [3:0]   arqos      ;         
+    logic  [3:0]   arcache    ;         
+    logic  [1:0]   arlock     ;         
+ } ar_channel_t;
+ 
+ ar_channel_t   ar_ch_0_fifo_din;
+ ar_channel_t   ar_ch_0_fifo_dout;
+ logic          ar_ch_0_fifo_empty;
+ logic          ar_ch_0_fifo_full;
+
+ assign ar_ch_0_fifo_din.arid     = ip2hdm_aximm0_arid;
+ assign ar_ch_0_fifo_din.araddr   = ip2hdm_aximm0_araddr;
+ assign ar_ch_0_fifo_din.arlen    = ip2hdm_aximm0_arlen;
+ assign ar_ch_0_fifo_din.arregion = ip2hdm_aximm0_arregion;
+ assign ar_ch_0_fifo_din.aruser   = ip2hdm_aximm0_aruser;
+ assign ar_ch_0_fifo_din.arsize   = ip2hdm_aximm0_arsize;
+ assign ar_ch_0_fifo_din.arburst  = ip2hdm_aximm0_arburst;
+ assign ar_ch_0_fifo_din.arprot   = ip2hdm_aximm0_arprot;
+ assign ar_ch_0_fifo_din.arqos    = ip2hdm_aximm0_arqos;
+ assign ar_ch_0_fifo_din.arcache  = ip2hdm_aximm0_arcache;
+ assign ar_ch_0_fifo_din.arlock   = ip2hdm_aximm0_arlock;
+
+sync_fifo
+#(
+    .LOG_DEPTH       (3),
+    .WIDTH           ($bits(ar_channel_t)),
+    .USE_LUTRAM      (1),
+    .USE_OUTREG      (1),
+    .SHOW_AHEAD      (1)
+)
+u_ar_ch_0_fifo (
+    .rst            (~rst_n),
+    .clk            (clk),
+    .wrreq          (ip2hdm_aximm0_arvalid && ~ar_ch_0_fifo_full),
+    .data           (ar_ch_0_fifo_din),
+    .rdreq          (~ar_ch_0_fifo_empty && hdm2ip_aximm_arready[0]),
+    .q              (ar_ch_0_fifo_dout),
+    .full           (ar_ch_0_fifo_full),
+    .almostfull     (),
+    .empty          (ar_ch_0_fifo_empty),
+    .almostempty    (),
+    .overflow       (),
+    .usedw          ()
+);
+
+
+ assign ip2hdm_aximm_arid    [0] = ar_ch_0_fifo_dout.arid ;
+ assign ip2hdm_aximm_araddr  [0] = ar_ch_0_fifo_dout.araddr ;
+ assign ip2hdm_aximm_arlen   [0] = ar_ch_0_fifo_dout.arlen ;
+ assign ip2hdm_aximm_arregion[0] = ar_ch_0_fifo_dout.arregion ;
+ assign ip2hdm_aximm_aruser  [0] = ar_ch_0_fifo_dout.aruser ;
+ assign ip2hdm_aximm_arsize  [0] = ar_ch_0_fifo_dout.arsize ;
+ assign ip2hdm_aximm_arburst [0] = ar_ch_0_fifo_dout.arburst ;
+ assign ip2hdm_aximm_arprot  [0] = ar_ch_0_fifo_dout.arprot  ;
+ assign ip2hdm_aximm_arqos   [0] = ar_ch_0_fifo_dout.arqos  ;
+ assign ip2hdm_aximm_arcache [0] = ar_ch_0_fifo_dout.arcache ;
+ assign ip2hdm_aximm_arlock  [0] = ar_ch_0_fifo_dout.arlock ;
+ assign ip2hdm_aximm_arvalid [0] = ~ar_ch_0_fifo_empty;
  assign ip2hdm_aximm_rready  [0] = ip2hdm_aximm0_rready ;
  
  assign hdm2ip_aximm0_awready    =  hdm2ip_aximm_awready[0] ;
@@ -872,7 +931,7 @@ module afu_top(
  assign hdm2ip_aximm0_bid        =  hdm2ip_aximm_bid    [0] ;
  assign hdm2ip_aximm0_buser      =  hdm2ip_aximm_buser  [0] ;
  assign hdm2ip_aximm0_bresp      =  hdm2ip_aximm_bresp  [0] ;
- assign hdm2ip_aximm0_arready    =  hdm2ip_aximm_arready[0] ;
+ assign hdm2ip_aximm0_arready    =  ~ar_ch_0_fifo_full;
  assign hdm2ip_aximm0_rvalid     =  hdm2ip_aximm_rvalid [0] ;
  assign hdm2ip_aximm0_rlast      =  hdm2ip_aximm_rlast  [0] ;
  assign hdm2ip_aximm0_rid        =  hdm2ip_aximm_rid    [0] ;
@@ -899,18 +958,60 @@ module afu_top(
  assign ip2hdm_aximm_wuser   [1] = ip2hdm_aximm1_wuser ;
  assign ip2hdm_aximm_wvalid  [1] = ip2hdm_aximm1_wvalid;
  assign ip2hdm_aximm_bready  [1] = ip2hdm_aximm1_bready ;
- assign ip2hdm_aximm_arid    [1] = ip2hdm_aximm1_arid ;
- assign ip2hdm_aximm_araddr  [1] = ip2hdm_aximm1_araddr ;
- assign ip2hdm_aximm_arlen   [1] = ip2hdm_aximm1_arlen ;
- assign ip2hdm_aximm_arregion[1] = ip2hdm_aximm1_arregion ;
- assign ip2hdm_aximm_aruser  [1] = ip2hdm_aximm1_aruser ;
- assign ip2hdm_aximm_arsize  [1] = ip2hdm_aximm1_arsize ;
- assign ip2hdm_aximm_arburst [1] = ip2hdm_aximm1_arburst ;
- assign ip2hdm_aximm_arprot  [1] = ip2hdm_aximm1_arprot  ;
- assign ip2hdm_aximm_arqos   [1] = ip2hdm_aximm1_arqos  ;
- assign ip2hdm_aximm_arcache [1] = ip2hdm_aximm1_arcache ;
- assign ip2hdm_aximm_arlock  [1] = ip2hdm_aximm1_arlock ;
- assign ip2hdm_aximm_arvalid [1] = ip2hdm_aximm1_arvalid;
+
+
+ ar_channel_t   ar_ch_1_fifo_din;
+ ar_channel_t   ar_ch_1_fifo_dout;
+ logic          ar_ch_1_fifo_empty;
+ logic          ar_ch_1_fifo_full;
+
+ assign ar_ch_1_fifo_din.arid     = ip2hdm_aximm1_arid;
+ assign ar_ch_1_fifo_din.araddr   = ip2hdm_aximm1_araddr;
+ assign ar_ch_1_fifo_din.arlen    = ip2hdm_aximm1_arlen;
+ assign ar_ch_1_fifo_din.arregion = ip2hdm_aximm1_arregion;
+ assign ar_ch_1_fifo_din.aruser   = ip2hdm_aximm1_aruser;
+ assign ar_ch_1_fifo_din.arsize   = ip2hdm_aximm1_arsize;
+ assign ar_ch_1_fifo_din.arburst  = ip2hdm_aximm1_arburst;
+ assign ar_ch_1_fifo_din.arprot   = ip2hdm_aximm1_arprot;
+ assign ar_ch_1_fifo_din.arqos    = ip2hdm_aximm1_arqos;
+ assign ar_ch_1_fifo_din.arcache  = ip2hdm_aximm1_arcache;
+ assign ar_ch_1_fifo_din.arlock   = ip2hdm_aximm1_arlock;
+
+sync_fifo
+#(
+    .LOG_DEPTH       (3),
+    .WIDTH           ($bits(ar_channel_t)),
+    .USE_LUTRAM      (1),
+    .USE_OUTREG      (1),
+    .SHOW_AHEAD      (1)
+)
+u_ar_ch_1_fifo (
+    .rst            (~rst_n),
+    .clk            (clk),
+    .wrreq          (ip2hdm_aximm1_arvalid && ~ar_ch_1_fifo_full),
+    .data           (ar_ch_1_fifo_din),
+    .rdreq          (~ar_ch_1_fifo_empty && hdm2ip_aximm_arready[1]),
+    .q              (ar_ch_1_fifo_dout),
+    .full           (ar_ch_1_fifo_full),
+    .almostfull     (),
+    .empty          (ar_ch_1_fifo_empty),
+    .almostempty    (),
+    .overflow       (),
+    .usedw          ()
+);
+
+ assign ip2hdm_aximm_arid    [1] = ar_ch_1_fifo_dout.arid ;
+ assign ip2hdm_aximm_araddr  [1] = ar_ch_1_fifo_dout.araddr ;
+ assign ip2hdm_aximm_arlen   [1] = ar_ch_1_fifo_dout.arlen ;
+ assign ip2hdm_aximm_arregion[1] = ar_ch_1_fifo_dout.arregion ;
+ assign ip2hdm_aximm_aruser  [1] = ar_ch_1_fifo_dout.aruser ;
+ assign ip2hdm_aximm_arsize  [1] = ar_ch_1_fifo_dout.arsize ;
+ assign ip2hdm_aximm_arburst [1] = ar_ch_1_fifo_dout.arburst ;
+ assign ip2hdm_aximm_arprot  [1] = ar_ch_1_fifo_dout.arprot  ;
+ assign ip2hdm_aximm_arqos   [1] = ar_ch_1_fifo_dout.arqos  ;
+ assign ip2hdm_aximm_arcache [1] = ar_ch_1_fifo_dout.arcache ;
+ assign ip2hdm_aximm_arlock  [1] = ar_ch_1_fifo_dout.arlock ;
+ assign ip2hdm_aximm_arvalid [1] = ~ar_ch_1_fifo_empty;
  assign ip2hdm_aximm_rready  [1] = ip2hdm_aximm1_rready ;
  
  assign hdm2ip_aximm1_awready    =  hdm2ip_aximm_awready[1] ;
@@ -919,7 +1020,7 @@ module afu_top(
  assign hdm2ip_aximm1_bid        =  hdm2ip_aximm_bid    [1] ;
  assign hdm2ip_aximm1_buser      =  hdm2ip_aximm_buser  [1] ;
  assign hdm2ip_aximm1_bresp      =  hdm2ip_aximm_bresp  [1] ;
- assign hdm2ip_aximm1_arready    =  hdm2ip_aximm_arready[1] ;
+ assign hdm2ip_aximm1_arready    =  ~ar_ch_1_fifo_full ;
  assign hdm2ip_aximm1_rvalid     =  hdm2ip_aximm_rvalid [1] ;
  assign hdm2ip_aximm1_rlast      =  hdm2ip_aximm_rlast  [1] ;
  assign hdm2ip_aximm1_rid        =  hdm2ip_aximm_rid    [1] ;
