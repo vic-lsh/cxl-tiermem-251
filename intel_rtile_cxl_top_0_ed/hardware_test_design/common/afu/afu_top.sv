@@ -939,6 +939,138 @@ module afu_top(
  assign hdm2ip_aximm1_ruser      =  hdm2ip_aximm_ruser  [1] ;
  assign hdm2ip_aximm1_rresp      =  hdm2ip_aximm_rresp  [1] ;
 
+
+(* preserve_for_debug *) wire [3:0] trans_happening;
+(* preserve_for_debug *) wire [3:0] yummy_happening;
+
+(* preserve_for_debug *) reg [63:0] num_mem_trans;
+(* preserve_for_debug *) reg [63:0] cycles_since_last_mem_trans;
+(* preserve_for_debug *) reg [63:0] cycles_since_last_mem_trans_r;
+(* preserve_for_debug *) reg [63:0] cycles_since_last_mem_trans_w;
+(* preserve_for_debug *) reg [63:0] cycles_since_last_mem_trans_0;
+(* preserve_for_debug *) reg [63:0] cycles_since_last_mem_trans_1;
+(* preserve_for_debug *) reg [63:0] cycles_since_last_mem_trans_0r;
+(* preserve_for_debug *) reg [63:0] cycles_since_last_mem_trans_0w;
+(* preserve_for_debug *) reg [63:0] cycles_since_last_mem_trans_1r;
+(* preserve_for_debug *) reg [63:0] cycles_since_last_mem_trans_1w;
+(* preserve_for_debug *) reg [63:0] num_outstanding_0r;
+(* preserve_for_debug *) reg [63:0] num_outstanding_0w;
+(* preserve_for_debug *) reg [63:0] num_outstanding_1r;
+(* preserve_for_debug *) reg [63:0] num_outstanding_1w;
+
+
+always @(posedge clk) begin
+    if (~rst_n) begin
+        num_mem_trans <= 0;
+        cycles_since_last_mem_trans <= 0;
+        cycles_since_last_mem_trans_r <= 0;
+        cycles_since_last_mem_trans_w <= 0;
+        cycles_since_last_mem_trans_0 <= 0;
+        cycles_since_last_mem_trans_1 <= 0;
+        cycles_since_last_mem_trans_0r <= 0;
+        cycles_since_last_mem_trans_0w <= 0;
+        cycles_since_last_mem_trans_1r <= 0;
+        cycles_since_last_mem_trans_1w <= 0;
+        num_outstanding_0r <= 0;
+        num_outstanding_0w <= 0;
+        num_outstanding_1r <= 0;
+        num_outstanding_1w <= 0;
+    end else begin
+
+        if (trans_happening[0] && !yummy_happening[0]) begin
+            num_outstanding_0r <= num_outstanding_0r + 1;
+        end else if (!trans_happening[0] && yummy_happening[0]) begin
+            num_outstanding_0r <= num_outstanding_0r - 1;
+        end
+
+        if (trans_happening[1] && !yummy_happening[1]) begin
+            num_outstanding_0w <= num_outstanding_0w + 1;
+        end else if (!trans_happening[1] && yummy_happening[1]) begin
+            num_outstanding_0w <= num_outstanding_0w - 1;
+        end
+
+        if (trans_happening[2] && !yummy_happening[2]) begin
+            num_outstanding_1r <= num_outstanding_1r + 1;
+        end else if (!trans_happening[2] && yummy_happening[2]) begin
+            num_outstanding_1r <= num_outstanding_1r - 1;
+        end
+
+        if (trans_happening[3] && !yummy_happening[3]) begin
+            num_outstanding_1w <= num_outstanding_1w + 1;
+        end else if (!trans_happening[3] && yummy_happening[3]) begin
+            num_outstanding_1w <= num_outstanding_1w - 1;
+        end
+
+
+        num_mem_trans <= num_mem_trans + trans_happening;
+        if (trans_happening != 0) begin
+            cycles_since_last_mem_trans <= 0;
+        end else begin
+            cycles_since_last_mem_trans <= cycles_since_last_mem_trans + 1;
+        end
+
+        if (trans_happening[0] || trans_happening[2]) begin
+            cycles_since_last_mem_trans_r <= 0;
+        end else begin
+            cycles_since_last_mem_trans_r <= cycles_since_last_mem_trans_r + 1;
+        end
+
+        if (trans_happening[1] || trans_happening[3]) begin
+            cycles_since_last_mem_trans_w <= 0;
+        end else begin
+            cycles_since_last_mem_trans_w <= cycles_since_last_mem_trans_w + 1;
+        end
+
+        if (trans_happening[0] || trans_happening[1]) begin
+            cycles_since_last_mem_trans_0 <= 0;
+        end else begin
+            cycles_since_last_mem_trans_0 <= cycles_since_last_mem_trans_0 + 1;
+        end
+
+        if (trans_happening[2] || trans_happening[3]) begin
+            cycles_since_last_mem_trans_1 <= 0;
+        end else begin
+            cycles_since_last_mem_trans_1 <= cycles_since_last_mem_trans_1 + 1;
+        end
+
+        if (trans_happening[0]) begin
+            cycles_since_last_mem_trans_0r <= 0;
+        end else begin
+            cycles_since_last_mem_trans_0r <= cycles_since_last_mem_trans_0r + 1;
+        end
+
+        if (trans_happening[1]) begin
+            cycles_since_last_mem_trans_0w <= 0;
+        end else begin
+            cycles_since_last_mem_trans_0w <= cycles_since_last_mem_trans_0w + 1;
+        end
+
+        if (trans_happening[2]) begin
+            cycles_since_last_mem_trans_1r <= 0;
+        end else begin
+            cycles_since_last_mem_trans_1r <= cycles_since_last_mem_trans_1r + 1;
+        end
+
+        if (trans_happening[3]) begin
+            cycles_since_last_mem_trans_1w <= 0;
+        end else begin
+            cycles_since_last_mem_trans_1w <= cycles_since_last_mem_trans_1w + 1;
+        end
+
+    end
+end
+
+assign trans_happening[0] = ip2hdm_aximm0_arvalid && hdm2ip_aximm0_arready;
+assign trans_happening[1] = ip2hdm_aximm0_awvalid && hdm2ip_aximm0_awready;
+assign trans_happening[2] = ip2hdm_aximm1_arvalid && hdm2ip_aximm1_arready;
+assign trans_happening[3] = ip2hdm_aximm1_awvalid && hdm2ip_aximm1_awready;
+
+assign yummy_happening[0] = hdm2ip_aximm0_rvalid && ip2hdm_aximm0_rready;
+assign yummy_happening[1] = hdm2ip_aximm0_bvalid && ip2hdm_aximm0_bready;
+assign yummy_happening[2] = hdm2ip_aximm1_rvalid && ip2hdm_aximm1_rready;
+assign yummy_happening[3] = hdm2ip_aximm1_bvalid && ip2hdm_aximm1_bready;
+
+
 // everything except valid and ready
 localparam AR_WIDTH = 0
                         + 8  //  input logic  [7:0]   ip2hdm_aximm0_arid       ,         
