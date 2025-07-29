@@ -958,6 +958,11 @@ module afu_top(
 (* preserve_for_debug *) reg [63:0] num_outstanding_1r;
 (* preserve_for_debug *) reg [63:0] num_outstanding_1w;
 
+(* preserve_for_debug *) reg [63:0] num_outstanding_0r_nonzero_cycles;
+(* preserve_for_debug *) reg [63:0] num_outstanding_0w_nonzero_cycles;
+(* preserve_for_debug *) reg [63:0] num_outstanding_1r_nonzero_cycles;
+(* preserve_for_debug *) reg [63:0] num_outstanding_1w_nonzero_cycles;
+
 
 always @(posedge clk) begin
     if (~rst_n) begin
@@ -975,7 +980,35 @@ always @(posedge clk) begin
         num_outstanding_0w <= 0;
         num_outstanding_1r <= 0;
         num_outstanding_1w <= 0;
+        num_outstanding_0r_nonzero_cycles <= 0;
+        num_outstanding_0w_nonzero_cycles <= 0;
+        num_outstanding_1r_nonzero_cycles <= 0;
+        num_outstanding_1w_nonzero_cycles <= 0;
     end else begin
+
+        if (yummy_happening[0] || num_outstanding_0r == 0) begin
+            num_outstanding_0r_nonzero_cycles <= 0;
+        end else begin
+            num_outstanding_0r_nonzero_cycles <= num_outstanding_0r_nonzero_cycles + 1;
+        end
+
+        if (yummy_happening[1] || num_outstanding_0w == 0) begin
+            num_outstanding_0w_nonzero_cycles <= 0;
+        end else begin
+            num_outstanding_0w_nonzero_cycles <= num_outstanding_0w_nonzero_cycles + 1;
+        end
+
+        if (yummy_happening[2] || num_outstanding_1r == 0) begin
+            num_outstanding_1r_nonzero_cycles <= 0;
+        end else begin
+            num_outstanding_1r_nonzero_cycles <= num_outstanding_1r_nonzero_cycles + 1;
+        end
+
+        if (yummy_happening[3] || num_outstanding_1w == 0) begin
+            num_outstanding_1w_nonzero_cycles <= 0;
+        end else begin
+            num_outstanding_1w_nonzero_cycles <= num_outstanding_1w_nonzero_cycles + 1;
+        end
 
         if (trans_happening[0] && !yummy_happening[0]) begin
             num_outstanding_0r <= num_outstanding_0r + 1;
