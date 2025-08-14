@@ -156,7 +156,7 @@ localparam CAFU_MC_HA_DDR4_DBI_WIDTH      = 9;
 
 localparam MEMCNTRL_ADDR_WIDTH = 46;
 
-localparam CAFU_EMIF_AMM_ADDR_WIDTH      = 27;
+localparam CAFU_EMIF_AMM_ADDR_WIDTH      = 30;
 localparam CAFU_EMIF_AMM_DATA_WIDTH      = 576;
 localparam CAFU_EMIF_AMM_BURST_WIDTH     = 7;
 localparam CAFU_EMIF_AMM_BE_WIDTH        = 72;
@@ -311,7 +311,7 @@ localparam CAFU_TYPE1_CDAT_1 = 32'h0000AA01;        // CDAT Checksum and Rev.
 
 // @@copy for common_afu_pkg@@start
 localparam CAFU_TYPE3_CDAT_0 = 32'h00000058;        // CDAT Length
-localparam CAFU_TYPE3_CDAT_1 = 32'h00005501;        // CDAT Checksum and Rev.
+localparam CAFU_TYPE3_CDAT_1 = 32'h00003901;        // CDAT Checksum and Rev.
 
 
 // parameters and structs copied from CXLIP for the CXLIP-to-CAFU AXI interface

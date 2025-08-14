@@ -120,7 +120,7 @@ localparam  TYPE1_CDAT_1 = 32'h0000AA01;        // CDAT Checksum and Rev.
 //      Type 3 POR Values
 //      Included structures DSMAS, DSLBIS and DSEMTS
 localparam  TYPE3_CDAT_0 = 32'h00000058;        // CDAT Length
-localparam  TYPE3_CDAT_1 = 32'h00005501;        // CDAT Checksum and Rev.
+localparam  TYPE3_CDAT_1 = 32'h00003901;        // CDAT Checksum and Rev.
 
 
 endpackage: ext_csr_if_pkg

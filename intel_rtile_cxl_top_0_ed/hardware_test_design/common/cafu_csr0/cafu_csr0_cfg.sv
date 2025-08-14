@@ -5289,7 +5289,7 @@ always_comb begin
 end
 
 
-`RTLGEN_CAFU_CSR0_CFG_EN_FF(gated_clk, rst_n, 8'h4, up_DSMAS_5_dsmas_5[0], nxt_DSMAS_5_dsmas_5[7:0], DSMAS_5.dsmas_5[7:0])
+`RTLGEN_CAFU_CSR0_CFG_EN_FF(gated_clk, rst_n, 8'h20, up_DSMAS_5_dsmas_5[0], nxt_DSMAS_5_dsmas_5[7:0], DSMAS_5.dsmas_5[7:0])
 `RTLGEN_CAFU_CSR0_CFG_EN_FF(gated_clk, rst_n, 8'h0, up_DSMAS_5_dsmas_5[1], nxt_DSMAS_5_dsmas_5[15:8], DSMAS_5.dsmas_5[15:8])
 `RTLGEN_CAFU_CSR0_CFG_EN_FF(gated_clk, rst_n, 8'h0, up_DSMAS_5_dsmas_5[2], nxt_DSMAS_5_dsmas_5[23:16], DSMAS_5.dsmas_5[23:16])
 `RTLGEN_CAFU_CSR0_CFG_EN_FF(gated_clk, rst_n, 8'h0, up_DSMAS_5_dsmas_5[3], nxt_DSMAS_5_dsmas_5[31:24], DSMAS_5.dsmas_5[31:24])

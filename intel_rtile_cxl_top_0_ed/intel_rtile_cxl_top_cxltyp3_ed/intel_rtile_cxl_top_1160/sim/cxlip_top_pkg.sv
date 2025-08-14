@@ -81,7 +81,7 @@ localparam MC_HA_DDR4_DQ_WIDTH       = 72; //bbs_pkg::HDM_MC_DDR_IF_DQ_WIDTH;
   localparam MC_HA_DDR4_CS_WIDTH       = 2;  //bbs_pkg::HDM_MC_DDR_IF_CS_WIDTH;
   localparam MC_HA_DDR4_ODT_WIDTH      = 2;  //bbs_pkg::HDM_MC_DDR_IF_ODT_WIDTH;
 `else
-  localparam EMIF_AMM_ADDR_WIDTH       = 27;
+  localparam EMIF_AMM_ADDR_WIDTH       = 30;
   localparam MC_HA_DDR4_CKE_WIDTH      = 1;  //bbs_pkg::HDM_MC_DDR_IF_CKE_WIDTH;
   localparam MC_HA_DDR4_CS_WIDTH       = 1;  //bbs_pkg::HDM_MC_DDR_IF_CS_WIDTH;
   localparam MC_HA_DDR4_ODT_WIDTH      = 1;  //bbs_pkg::HDM_MC_DDR_IF_ODT_WIDTH;

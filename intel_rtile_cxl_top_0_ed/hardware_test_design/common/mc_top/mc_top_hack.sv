@@ -39,7 +39,7 @@ module mc_top_hack #(
    parameter MC_HA_DDR4_DQS_WIDTH      = 9,
    parameter MC_HA_DDR4_DQ_WIDTH       = 72,
    parameter MC_HA_DDR4_DBI_WIDTH      = 9,
-   parameter EMIF_AMM_ADDR_WIDTH       = 27,
+   parameter EMIF_AMM_ADDR_WIDTH       = 30,
    parameter EMIF_AMM_DATA_WIDTH       = 576,
    parameter EMIF_AMM_BURST_WIDTH      = 7,
    parameter EMIF_AMM_BE_WIDTH         = 72,

@@ -1249,7 +1249,7 @@ assign  usr2ip_qos_devload                       = 2'b00;
 `ifdef HDM_64G
       assign hdm_size_256mb = 36'h100;// HDM_64G
 `else
-      assign hdm_size_256mb = 36'h40; // HDM_16G
+      assign hdm_size_256mb = 36'h200; // HDM_16G
 `endif
 
 
