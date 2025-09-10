@@ -1955,6 +1955,11 @@ intel_cxl_tx_tlp_fifos  inst_tlp_fifos  (
 
 
  afu_top afu_top_inst(
+    // added code
+    .clk(ip2hdm_clk),
+    .rst_n(ip2hdm_reset_n_ff),
+
+
     // DDRMC <--> CXL-IP Slice
 
     .mc2ip_0_sr_status                     (mc2ip_0_sr_status          ),
